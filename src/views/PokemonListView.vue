@@ -20,7 +20,13 @@
     </div>
   </div>
   <ListButtons v-if="displayedPokemon.length > 0" v-model="currentFilter" />
-  <PokemonModal v-if="showModal" :pokemon="selectedPokemon" @close="closeModal" />
+  <PokemonModal
+    v-if="showModal"
+    :pokemon="selectedPokemon"
+    @close="closeModal"
+    :toggleFavoriteAndFilter="toggleFavoriteAndFilter"
+    :isFavorite="isFavorite"
+  />
 </template>
 
 <script setup>
@@ -32,26 +38,17 @@ import ListButtons from '@/components/ListButtons.vue'
 import CompButton from '@/components/CompButton.vue'
 import PokemonIcon from '@/components/icons/PokemonIcon.vue'
 import PokemonModal from '@/components/PokemonModal.vue'
+import { usePokemon } from '../composables/usePokemon'
 
 const pokemonStore = usePokemonStore()
 
 const { allPokemon, displayedPokemon, loading, searchQuery, favorites } = storeToRefs(pokemonStore)
-const { toggleFavorite, fetchPokemonDetails } = pokemonStore
+const { fetchPokemonDetails } = pokemonStore
 const currentFilter = ref('all')
 const showModal = ref(false)
 const selectedPokemon = ref(null)
 
-function toggleFavoriteAndFilter(pokemon) {
-  toggleFavorite(pokemon)
-  if (currentFilter.value === 'favorites') {
-    if (favorites.value.length === 0) {
-      currentFilter.value = 'all'
-      displayedPokemon.value = allPokemon.value
-    } else {
-      displayedPokemon.value = favorites.value
-    }
-  }
-}
+const { toggleFavoriteAndFilter, isFavorite } = usePokemon()
 
 async function openModal(pokemon) {
   selectedPokemon.value = await fetchPokemonDetails(pokemon.name)
@@ -72,10 +69,6 @@ onMounted(async () => {
 function goBack() {
   displayedPokemon.value = allPokemon.value
   searchQuery.value = ''
-}
-
-function isFavorite(pokemon) {
-  return favorites.value.some((fav) => fav.name === pokemon.name)
 }
 
 watch(

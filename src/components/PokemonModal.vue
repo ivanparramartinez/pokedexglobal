@@ -29,6 +29,7 @@ import { defineProps, defineEmits } from 'vue'
 import { capitalizeFirstLetter } from '../helpers'
 import CompButton from './CompButton.vue'
 import PokemonIcon from './icons/PokemonIcon.vue'
+import { usePokemon } from '../composables/usePokemon'
 
 const props = defineProps({
   pokemon: {
@@ -39,16 +40,10 @@ const props = defineProps({
 
 const emit = defineEmits(['close'])
 
+const { toggleFavoriteAndFilter, isFavorite } = usePokemon()
+
 function close() {
   emit('close')
-}
-
-function toggleFavoriteAndFilter(pokemon) {
-  // ...existing code...
-}
-
-function isFavorite(pokemon) {
-  // ...existing code...
 }
 </script>
 
