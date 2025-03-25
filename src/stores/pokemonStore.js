@@ -123,12 +123,7 @@ export const usePokemonStore = defineStore('pokemon', () => {
     } else {
       favorites.value.splice(index, 1)
     }
-    if (currentFilter.value === 'favorites') {
-      if (favorites.value.length === 0) {
-        currentFilter.value = 'all'
-      }
-      updateDisplayedPokemon()
-    }
+    updateDisplayedPokemon()
   }
 
   return {

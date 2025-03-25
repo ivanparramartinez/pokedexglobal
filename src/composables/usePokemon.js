@@ -8,13 +8,12 @@ export function usePokemon() {
 
   function toggleFavoriteAndFilter(pokemon) {
     pokemonStore.toggleFavorite(pokemon)
+    updateDisplayedPokemon()
+  }
+
+  function updateDisplayedPokemon() {
     if (currentFilter.value === 'favorites') {
-      if (favorites.value.length === 0) {
-        currentFilter.value = 'all'
-        displayedPokemon.value = allPokemon.value
-      } else {
-        displayedPokemon.value = favorites.value
-      }
+      displayedPokemon.value = favorites.value.length ? favorites.value : allPokemon.value
     }
   }
 
