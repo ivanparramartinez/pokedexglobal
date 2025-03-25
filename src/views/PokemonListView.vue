@@ -17,7 +17,7 @@
         </div>
       </div>
     </div>
-    <div class="pokemon-not-found" v-else-if="!loading">
+    <div class="pokemon-not-found" v-else-if="!loading && displayedPokemon.length === 0">
       <h1 class="title">Uh-oh!</h1>
       <p class="description">You look lost on your journey!</p>
       <CompButton text="Go back home" @click="goBack" />
@@ -48,7 +48,7 @@ const pokemonStore = usePokemonStore()
 
 const { allPokemon, displayedPokemon, loading, searchQuery, favorites, currentFilter } =
   storeToRefs(pokemonStore)
-const { fetchPokemonDetails } = pokemonStore
+const { fetchPokemonDetails, updateDisplayedPokemon } = pokemonStore
 const showModal = ref(false)
 const selectedPokemon = ref(null)
 
@@ -73,21 +73,13 @@ onMounted(async () => {
 function goBack() {
   displayedPokemon.value = allPokemon.value
   searchQuery.value = ''
+  updateDisplayedPokemon()
 }
 
 watch(
   () => currentFilter.value,
   (newVal) => {
-    if (newVal === 'all') {
-      displayedPokemon.value = allPokemon.value
-    } else if (newVal === 'favorites') {
-      if (favorites.value.length === 0) {
-        currentFilter.value = 'all'
-        displayedPokemon.value = allPokemon.value
-      } else {
-        displayedPokemon.value = favorites.value
-      }
-    }
+    updateDisplayedPokemon()
   },
 )
 </script>

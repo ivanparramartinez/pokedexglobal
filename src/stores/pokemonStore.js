@@ -126,6 +126,9 @@ export const usePokemonStore = defineStore('pokemon', () => {
     } else {
       favorites.value.splice(index, 1)
     }
+    if (!pokemonList.value.some((p) => p.name === pokemon.name)) {
+      pokemonList.value.push(pokemon)
+    }
     updateDisplayedPokemon()
   }
 
