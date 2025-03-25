@@ -32,6 +32,16 @@ export const usePokemonStore = defineStore('pokemon', () => {
     }
   }
 
+  const fetchPokemonDetails = async (name) => {
+    try {
+      const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${name}`)
+      return response.data
+    } catch (error) {
+      console.error(error)
+      return null
+    }
+  }
+
   const allPokemon = computed(() => pokemonList.value)
 
   const filteredPokemon = computed(() => {
@@ -120,6 +130,7 @@ export const usePokemonStore = defineStore('pokemon', () => {
     loading,
     error,
     fetchAllPokemon,
+    fetchPokemonDetails,
     allPokemon,
     searchQuery,
     filteredPokemon,

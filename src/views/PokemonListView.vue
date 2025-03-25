@@ -4,10 +4,12 @@
     <div v-if="displayedPokemon.length > 0">
       <div class="pokemon-list">
         <div class="pokemon-card" v-for="pokemon in displayedPokemon" :key="pokemon.name">
-          <p class="pokemon-name">{{ pokemon.name }}</p>
-          <div class="pokemon-icon" @click="toggleFavoriteAndFilter(pokemon)">
-            <IconStar :is-favorite="isFavorite(pokemon)" />
-          </div>
+          <p class="pokemon-name" @click="openModal(pokemon)">{{ pokemon.name }}</p>
+          <PokemonIcon
+            :pokemon="pokemon"
+            :toggleFavoriteAndFilter="toggleFavoriteAndFilter"
+            :isFavorite="isFavorite"
+          />
         </div>
       </div>
     </div>
@@ -18,6 +20,7 @@
     </div>
   </div>
   <ListButtons v-if="displayedPokemon.length > 0" v-model="currentFilter" />
+  <PokemonModal v-if="showModal" :pokemon="selectedPokemon" @close="closeModal" />
 </template>
 
 <script setup>
@@ -27,13 +30,16 @@ import { usePokemonStore } from '../stores/pokemonStore'
 import SearchPokemon from '@/components/SearchPokemon.vue'
 import ListButtons from '@/components/ListButtons.vue'
 import CompButton from '@/components/CompButton.vue'
-import IconStar from '@/components/icons/IconStar.vue'
+import PokemonIcon from '@/components/icons/PokemonIcon.vue'
+import PokemonModal from '@/components/PokemonModal.vue'
 
 const pokemonStore = usePokemonStore()
 
 const { allPokemon, displayedPokemon, loading, searchQuery, favorites } = storeToRefs(pokemonStore)
-const { toggleFavorite, updateDisplayedPokemon } = pokemonStore
+const { toggleFavorite, fetchPokemonDetails } = pokemonStore
 const currentFilter = ref('all')
+const showModal = ref(false)
+const selectedPokemon = ref(null)
 
 function toggleFavoriteAndFilter(pokemon) {
   toggleFavorite(pokemon)
@@ -45,6 +51,16 @@ function toggleFavoriteAndFilter(pokemon) {
       displayedPokemon.value = favorites.value
     }
   }
+}
+
+async function openModal(pokemon) {
+  selectedPokemon.value = await fetchPokemonDetails(pokemon.name)
+  showModal.value = true
+}
+
+function closeModal() {
+  showModal.value = false
+  selectedPokemon.value = null
 }
 
 onMounted(async () => {
@@ -102,6 +118,7 @@ watch(
   font-size: 1.5rem;
   text-transform: capitalize;
   color: var(--text-color);
+  cursor: pointer;
 }
 
 .pokemon-icon {
