@@ -4,8 +4,7 @@ import { usePokemonStore } from '../stores/pokemonStore'
 
 export function usePokemon() {
   const pokemonStore = usePokemonStore()
-  const { allPokemon, displayedPokemon, favorites } = storeToRefs(pokemonStore)
-  const currentFilter = ref('all')
+  const { allPokemon, displayedPokemon, favorites, currentFilter } = storeToRefs(pokemonStore)
 
   function toggleFavoriteAndFilter(pokemon) {
     pokemonStore.toggleFavorite(pokemon)

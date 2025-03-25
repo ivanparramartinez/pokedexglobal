@@ -1,7 +1,9 @@
 <template>
   <div class="pokemon-list-view">
     <SearchPokemon />
-    <div v-if="displayedPokemon.length > 0">
+    <div
+      v-if="displayedPokemon.length > 0 || (currentFilter === 'favorites' && favorites.length > 0)"
+    >
       <div class="pokemon-list">
         <div class="pokemon-card" v-for="pokemon in displayedPokemon" :key="pokemon.name">
           <p class="pokemon-name" @click="openModal(pokemon)">{{ pokemon.name }}</p>
@@ -42,9 +44,9 @@ import { usePokemon } from '../composables/usePokemon'
 
 const pokemonStore = usePokemonStore()
 
-const { allPokemon, displayedPokemon, loading, searchQuery, favorites } = storeToRefs(pokemonStore)
+const { allPokemon, displayedPokemon, loading, searchQuery, favorites, currentFilter } =
+  storeToRefs(pokemonStore)
 const { fetchPokemonDetails } = pokemonStore
-const currentFilter = ref('all')
 const showModal = ref(false)
 const selectedPokemon = ref(null)
 
