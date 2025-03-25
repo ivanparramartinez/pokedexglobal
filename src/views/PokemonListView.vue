@@ -6,7 +6,9 @@
     >
       <div class="pokemon-list">
         <div class="pokemon-card" v-for="pokemon in displayedPokemon" :key="pokemon.name">
-          <p class="pokemon-name" @click="openModal(pokemon)">{{ pokemon.name }}</p>
+          <div class="pokemon-card-content" @click="openModal(pokemon)">
+            <p class="pokemon-name">{{ pokemon.name }}</p>
+          </div>
           <PokemonIcon
             :pokemon="pokemon"
             :toggleFavoriteAndFilter="toggleFavoriteAndFilter"
@@ -76,7 +78,16 @@ function goBack() {
 watch(
   () => currentFilter.value,
   (newVal) => {
-    displayedPokemon.value = newVal === 'favorites' ? favorites.value : allPokemon.value
+    if (newVal === 'all') {
+      displayedPokemon.value = allPokemon.value
+    } else if (newVal === 'favorites') {
+      if (favorites.value.length === 0) {
+        currentFilter.value = 'all'
+        displayedPokemon.value = allPokemon.value
+      } else {
+        displayedPokemon.value = favorites.value
+      }
+    }
   },
 )
 </script>
@@ -104,12 +115,18 @@ watch(
   align-items: center;
 }
 
+.pokemon-card-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
 .pokemon-name {
   font-weight: semibold;
   font-size: 1.5rem;
   text-transform: capitalize;
   color: var(--text-color);
-  cursor: pointer;
 }
 
 .pokemon-icon {

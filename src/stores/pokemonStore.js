@@ -107,6 +107,9 @@ export const usePokemonStore = defineStore('pokemon', () => {
   })
 
   const updateDisplayedPokemon = () => {
+    if (currentFilter.value === 'favorites' && favorites.value.length === 0) {
+      currentFilter.value = 'all'
+    }
     if (currentFilter.value === 'favorites') {
       displayedPokemon.value = filteredPokemonByFavorites.value
     } else if (searchQuery.value) {
