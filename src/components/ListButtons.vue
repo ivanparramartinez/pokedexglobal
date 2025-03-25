@@ -3,7 +3,7 @@
     <div class="buttons-content">
       <CompButton
         text="All"
-        :selected="selectedButton === 'all'"
+        :selected="modelValue === 'all'"
         @click="selectButton('all')"
         icon
         full-width
@@ -14,7 +14,7 @@
       </CompButton>
       <CompButton
         text="Favorites"
-        :selected="selectedButton === 'favorites'"
+        :selected="modelValue === 'favorites'"
         @click="selectButton('favorites')"
         icon
         full-width
@@ -28,17 +28,22 @@
 </template>
 
 <script setup>
-import { ref, defineEmits } from 'vue'
+import { defineEmits, defineProps } from 'vue'
 import CompButton from './CompButton.vue'
 import IconStar from './icons/IconStar.vue'
 import IconList from './icons/IconList.vue'
 
-const selectedButton = ref('all')
-const emit = defineEmits(['filter-pokemon'])
+const props = defineProps({
+  modelValue: {
+    type: String,
+    required: true,
+  },
+})
+
+const emit = defineEmits(['update:modelValue'])
 
 function selectButton(button) {
-  selectedButton.value = button
-  emit('filter-pokemon', button)
+  emit('update:modelValue', button)
 }
 </script>
 

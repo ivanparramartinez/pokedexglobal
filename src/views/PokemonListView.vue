@@ -17,11 +17,11 @@
       <CompButton text="Go back home" @click="goBack" />
     </div>
   </div>
-  <ListButtons v-if="displayedPokemon.length > 0" @filter-pokemon="filterPokemon" />
+  <ListButtons v-if="displayedPokemon.length > 0" v-model="currentFilter" />
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { usePokemonStore } from '../stores/pokemonStore'
 import SearchPokemon from '@/components/SearchPokemon.vue'
@@ -62,15 +62,16 @@ function isFavorite(pokemon) {
   return favorites.value.some((fav) => fav.name === pokemon.name)
 }
 
-function filterPokemon(filter) {
-  if (filter === 'all') {
-    currentFilter.value = 'all'
-    displayedPokemon.value = allPokemon.value
-  } else if (filter === 'favorites') {
-    currentFilter.value = 'favorites'
-    displayedPokemon.value = favorites.value
-  }
-}
+watch(
+  () => currentFilter.value,
+  (newVal) => {
+    if (newVal === 'all') {
+      displayedPokemon.value = allPokemon.value
+    } else if (newVal === 'favorites') {
+      displayedPokemon.value = favorites.value
+    }
+  },
+)
 </script>
 
 <style scoped>
