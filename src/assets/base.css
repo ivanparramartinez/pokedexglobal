@@ -1,0 +1,33 @@
+:root {
+  --primary-color: #f8f8f8;
+  --secondary-color: #e7e7e7;
+  --text-color: #333;
+  --font-family: 'Lato', sans-serif;
+  --font-size: 15px;
+  --padding: 1rem;
+  --gap: 1rem;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  font-weight: normal;
+}
+
+body {
+  min-height: 100vh;
+  height: 100vh;
+  transition:
+    color 0.5s,
+    background-color 0.5s;
+  line-height: 1.6;
+  font-family: var(--font-family);
+  font-size: var(--font-size);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f9f9f9;
+  padding: 2rem;
+}
