@@ -62,7 +62,9 @@ function close() {
 }
 
 function copyToClipboard() {
-  const pokemonData = `Name: ${props.pokemon.name}, Weight: ${props.pokemon.weight}, Height: ${props.pokemon.height}, Types: ${props.pokemon.types.map((type) => capitalizeFirstLetter(type.type.name)).join(', ')}`
+  const { name, weight, height, types } = props.pokemon
+  const typeNames = types.map((type) => capitalizeFirstLetter(type.type.name)).join(', ')
+  const pokemonData = `Name: ${name}, Weight: ${weight}, Height: ${height}, Types: ${typeNames}`
   navigator.clipboard.writeText(pokemonData).then(() => {
     alert('Pokemon data copied to clipboard!')
   })

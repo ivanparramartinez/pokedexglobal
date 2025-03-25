@@ -12,9 +12,10 @@ export function usePokemon() {
   }
 
   function updateDisplayedPokemon() {
-    if (currentFilter.value === 'favorites') {
-      displayedPokemon.value = favorites.value.length ? favorites.value : allPokemon.value
-    }
+    displayedPokemon.value =
+      currentFilter.value === 'favorites' && favorites.value.length
+        ? favorites.value
+        : allPokemon.value
   }
 
   function isFavorite(pokemon) {

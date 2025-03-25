@@ -76,11 +76,7 @@ function goBack() {
 watch(
   () => currentFilter.value,
   (newVal) => {
-    if (newVal === 'all') {
-      displayedPokemon.value = allPokemon.value
-    } else if (newVal === 'favorites') {
-      displayedPokemon.value = favorites.value
-    }
+    displayedPokemon.value = newVal === 'favorites' ? favorites.value : allPokemon.value
   },
 )
 </script>
