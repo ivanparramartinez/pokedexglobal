@@ -5,6 +5,9 @@
       <div class="pokemon-list">
         <div class="pokemon-card" v-for="pokemon in displayedPokemon" :key="pokemon.name">
           <p class="pokemon-name">{{ pokemon.name }}</p>
+          <div class="pokemon-icon" @click="toggleFavoriteAndFilter(pokemon)">
+            <IconStar :is-favorite="isFavorite(pokemon)" />
+          </div>
         </div>
       </div>
     </div>
@@ -14,20 +17,35 @@
       <CompButton text="Go back home" @click="goBack" />
     </div>
   </div>
-  <ListButtons v-if="displayedPokemon.length > 0" />
+  <ListButtons v-if="displayedPokemon.length > 0" @filter-pokemon="filterPokemon" />
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { usePokemonStore } from '../stores/pokemonStore'
 import SearchPokemon from '@/components/SearchPokemon.vue'
 import ListButtons from '@/components/ListButtons.vue'
 import CompButton from '@/components/CompButton.vue'
+import IconStar from '@/components/icons/IconStar.vue'
 
 const pokemonStore = usePokemonStore()
 
-const { allPokemon, displayedPokemon, loading, searchQuery } = storeToRefs(pokemonStore)
+const { allPokemon, displayedPokemon, loading, searchQuery, favorites } = storeToRefs(pokemonStore)
+const { toggleFavorite, updateDisplayedPokemon } = pokemonStore
+const currentFilter = ref('all')
+
+function toggleFavoriteAndFilter(pokemon) {
+  toggleFavorite(pokemon)
+  if (currentFilter.value === 'favorites') {
+    if (favorites.value.length === 0) {
+      currentFilter.value = 'all'
+      displayedPokemon.value = allPokemon.value
+    } else {
+      displayedPokemon.value = favorites.value
+    }
+  }
+}
 
 onMounted(async () => {
   if (!allPokemon.value.length) {
@@ -38,6 +56,20 @@ onMounted(async () => {
 function goBack() {
   displayedPokemon.value = allPokemon.value
   searchQuery.value = ''
+}
+
+function isFavorite(pokemon) {
+  return favorites.value.some((fav) => fav.name === pokemon.name)
+}
+
+function filterPokemon(filter) {
+  if (filter === 'all') {
+    currentFilter.value = 'all'
+    displayedPokemon.value = allPokemon.value
+  } else if (filter === 'favorites') {
+    currentFilter.value = 'favorites'
+    displayedPokemon.value = favorites.value
+  }
 }
 </script>
 
@@ -59,6 +91,9 @@ function goBack() {
 .pokemon-card {
   background-color: white;
   padding: var(--padding);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .pokemon-name {
@@ -66,6 +101,16 @@ function goBack() {
   font-size: 1.5rem;
   text-transform: capitalize;
   color: var(--text-color);
+}
+
+.pokemon-icon {
+  background-color: var(--tertiary-color);
+  border-radius: 50%;
+  padding: 0.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
 }
 
 .pokemon-not-found {

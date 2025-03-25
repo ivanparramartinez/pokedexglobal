@@ -20,7 +20,7 @@
         full-width
       >
         <template #icon>
-          <IconStar />
+          <IconStar color="white" />
         </template>
       </CompButton>
     </div>
@@ -28,15 +28,17 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, defineEmits } from 'vue'
 import CompButton from './CompButton.vue'
 import IconStar from './icons/IconStar.vue'
 import IconList from './icons/IconList.vue'
 
 const selectedButton = ref('all')
+const emit = defineEmits(['filter-pokemon'])
 
 function selectButton(button) {
   selectedButton.value = button
+  emit('filter-pokemon', button)
 }
 </script>
 

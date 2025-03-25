@@ -10,6 +10,8 @@ export const usePokemonStore = defineStore('pokemon', () => {
   const searchQuery = ref('')
   const limit = ref(50)
   const offset = ref(0)
+  const favorites = ref([])
+  const currentFilter = ref('all')
 
   const fetchAllPokemon = async () => {
     loading.value = true
@@ -38,6 +40,12 @@ export const usePokemonStore = defineStore('pokemon', () => {
     }
     return pokemonList.value.filter((pokemon) =>
       pokemon.name.toLowerCase().includes(searchQuery.value.toLowerCase()),
+    )
+  })
+
+  const filteredPokemonByFavorites = computed(() => {
+    return pokemonList.value.filter((pokemon) =>
+      favorites.value.some((fav) => fav.name === pokemon.name),
     )
   })
 
@@ -84,11 +92,26 @@ export const usePokemonStore = defineStore('pokemon', () => {
   }, 300)
 
   watch(searchQuery, () => {
+    currentFilter.value = 'all'
     debouncedSearch()
   })
 
   const updateDisplayedPokemon = () => {
-    displayedPokemon.value = filteredPokemon.value
+    if (searchQuery.value) {
+      displayedPokemon.value = filteredPokemon.value
+    } else {
+      displayedPokemon.value = allPokemon.value
+    }
+  }
+
+  const toggleFavorite = (pokemon) => {
+    const index = favorites.value.findIndex((fav) => fav.name === pokemon.name)
+    if (index === -1) {
+      favorites.value.push({ ...pokemon, isFavorite: true })
+    } else {
+      favorites.value.splice(index, 1)
+    }
+    updateDisplayedPokemon()
   }
 
   return {
@@ -105,5 +128,9 @@ export const usePokemonStore = defineStore('pokemon', () => {
     updateDisplayedPokemon,
     searchPokemon,
     cleanSearchQuery,
+    favorites,
+    toggleFavorite,
+    filteredPokemonByFavorites,
+    currentFilter,
   }
 })
